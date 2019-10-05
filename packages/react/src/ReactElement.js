@@ -107,6 +107,8 @@ function defineRefPropWarningGetter(props, displayName) {
  * @param {*} source An annotation object (added by a transpiler or otherwise)
  * indicating filename, line number, and/or other information.
  * @internal
+ * 
+ * 工厂函数，创建 React Element
  */
 const ReactElement = function(type, key, ref, self, source, owner, props) {
   const element = {
@@ -308,6 +310,8 @@ export function jsxDEV(type, config, maybeKey, source, self) {
 /**
  * Create and return a new ReactElement of the given type.
  * See https://reactjs.org/docs/react-api.html#createelement
+ * 
+ * 根据 type 返回一个新的 ReactElement
  */
 export function createElement(type, config, children) {
   let propName;
@@ -320,7 +324,9 @@ export function createElement(type, config, children) {
   let self = null;
   let source = null;
 
+  // 判断是否传入配置，例如 <img src="avatar.png" className="profile" /> 中， src 会被解析到配置中
   if (config != null) {
+    // 验证 ref 和 key
     if (hasValidRef(config)) {
       ref = config.ref;
     }
@@ -331,6 +337,7 @@ export function createElement(type, config, children) {
     self = config.__self === undefined ? null : config.__self;
     source = config.__source === undefined ? null : config.__source;
     // Remaining properties are added to a new props object
+    // 遍历配置，把几个内建的属性踢掉后放在 props 中
     for (propName in config) {
       if (
         hasOwnProperty.call(config, propName) &&
@@ -343,6 +350,7 @@ export function createElement(type, config, children) {
 
   // Children can be more than one argument, and those are transferred onto
   // the newly allocated props object.
+  // 第三个参数可能是多个，多个的话用数组进行处理
   const childrenLength = arguments.length - 2;
   if (childrenLength === 1) {
     props.children = children;
@@ -360,6 +368,7 @@ export function createElement(type, config, children) {
   }
 
   // Resolve default props
+  // 判断是否有给组件设置 defaultProps，只有当值为 undefined 的时候才会去设置默认值 
   if (type && type.defaultProps) {
     const defaultProps = type.defaultProps;
     for (propName in defaultProps) {
